@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "3.6.3"
+    }
+
+    stages {
+        /* add stage if need to install terraform but itis already installed on current machine
+	stage('terraform installation') {
+            steps {
+               sh '''yum install wget unzip -y
+		export VER="0.13.5"
+		wget https://releases.hashicorp.com/terraform/${VER}/terraform_${VER}_linux_amd64.zip
+		unzip terraform_${VER}_linux_amd64.zip
+		mv terraform /usr/local/bin/
+		pwd
+		rm -rf terraform_${VER}_linux_amd64.zip'''
+            }
+        }  */
+            
+        stage('Infrastructure Build'){
+           steps { 
+		sh '''terraform get
+		terraform init
+		terraform plan
+		terraform apply'''
+        	}
+        	}
+	}
+	post {
+  	  success {
+   	     mail to: 'akhilrchada@gmail.com',
+             subject: "Success Pipeline: ${currentBuild.fullDisplayName}",
+             body: "Infrastructure in built ${env.BUILD_URL}"
+	     sh 'echo "Infrastructure in built"'
+   		}
+	  failure {
+		sh  '''terraform init
+		terraform destroy
+		echo "failed to build but destroyed"''' 
+		}
+	} 
+    }
