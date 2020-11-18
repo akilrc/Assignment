@@ -1,0 +1,7 @@
+project_name = "possible-origin-236919"
+region = "northamerica-northeast"
+zone = "northamerica-northeast1-b"
+bucket_name = "assignment_bucketff"
+# prefix = ""
+token_path = "./plucky-sight-296003-4867509ee645.json"
+storage_class = "REGIONAL"
